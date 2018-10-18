@@ -1,8 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-
-
 // ES6 destructuring.
 var {mongoose} = require('./db/mongoose');// ext  .js can be left over');
 
@@ -15,6 +13,7 @@ var app = express();
 // middleware for body parser.
 app.use(bodyParser.json());
 
+// post route.
 // fwd slash for creation
 app.post('/todos', (req,res) => {
     console.log(req.body);
@@ -26,6 +25,16 @@ app.post('/todos', (req,res) => {
     }, (e) => {
         res.status(400).send(e);
     });
+});
+
+// get route.
+// get all recs.
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+    res.send({todos}); // since we get more than one(is an array), pass as object.
+    }, (e) => {
+        res.status(400).send(e);
+    })
 });
 
 app.listen(3000, () => {
