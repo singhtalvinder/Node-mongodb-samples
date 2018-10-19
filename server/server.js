@@ -34,7 +34,7 @@ app.get('/todos', (req, res) => {
     res.send({todos}); // since we get more than one(is an array), pass as object.
     }, (e) => {
         res.status(400).send(e);
-    })
+    });
 });
 
 app.listen(3000, () => {
