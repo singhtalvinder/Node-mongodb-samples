@@ -1,5 +1,6 @@
 const expect =require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
 // local files 
 const {app} = require('./../server'); // .js ext not needed in es6
@@ -7,8 +8,10 @@ const {Todo} = require('./../models/todo');
 
 // add seed data
 const todos = [{
+    _id: new ObjectID(),
     text: "First test todo"
 },{
+    _id: new ObjectID(),
     text: "Second test todo"
 }];
 
@@ -81,3 +84,34 @@ describe('GET /todos', () => {
         .end(done);
     })
 });
+
+// next test case.
+describe('GET /todos:/id', () =>{
+    it('Should return todo document.',(done)=>{
+        request(app)
+        .get(`/todos/${todos[0]._id.toHexString()}`)
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(todos[0].text);
+        })
+        .end(done);
+    });
+
+    it('Should return 404 if todo document not found.',(done)=>{
+        var hexId = new ObjectID().toHexString();
+
+        request(app)
+        .get(`/todos/${hexId}`)
+        .expect(404)
+        .end(done); // async test 
+
+    });
+
+    it('Should return 404 for non-object ids.',(done)=>{
+        request(app)
+        .get('/todos/12332}')
+        .expect(404)
+        .end(done); //async test 
+
+    });
+})
