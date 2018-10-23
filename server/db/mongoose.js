@@ -10,7 +10,8 @@ mongoose.connect('mongodb://localhost:27017/TodoApp');
 //anyway we want to connect to the mlab one
 //MongoClient.connect(process.env.MONGODB_URI ||
 //'mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp', 
-MongoClient.connect('mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp' ||
+MongoClient.connect(
+    'mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp' ||
    'mongodb://localhost:27071/Todoapp', 
     (err, client)=>{
         if(err) {
@@ -18,7 +19,9 @@ MongoClient.connect('mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp
     }
 
     console.log('connected to mlab ------Mongodb server');
-
+    });
+// ES6 syntax.
+module.exports = {mongoose};
 /*
 const db = client.db('todoapp');
 db.collection('todos').insertOne({
@@ -37,8 +40,7 @@ db.collection('todos').insertOne({
 
 
 
-// ES6 syntax.
-module.exports = {mongoose};
+
 
 // old way
 //module.exports = {
