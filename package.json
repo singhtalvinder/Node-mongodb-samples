@@ -9,9 +9,9 @@
     "test-watch": "nodemon --exec \"npm test\"" 
   },
   "engines": {
-    "node: "
+    "node": "8.11.1"
   },
-  "author": "8.11.1",
+  "author": "TS",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
