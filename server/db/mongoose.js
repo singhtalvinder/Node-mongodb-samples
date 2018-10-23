@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise;
 
 //mongoose.connect('mongodb://localhost:27017/TodoApp');
 mongoose.connect(
-    'mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp' ||
+    'mongodb://test1:todoapp\@123@ds139523.mlab.com:39523/todoapp' ||
     'mongodb://localhost:27071/Todoapp');
 
 //////////////////////////////////////////////
