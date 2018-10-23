@@ -11,6 +11,12 @@ var {user} = require('./models/user');
 // create routes.
 // server
 var app = express();
+
+// use port from system for heruku, else 
+// set port to 3000 for local host.
+const port = process.env.PORT || 3000;
+
+
 // middleware for body parser.
 app.use(bodyParser.json());
 
@@ -72,8 +78,8 @@ app.get('/todos/:id', (req,res) => {
 })
 
 
-app.listen(3000, () => {
-    console.log('Started on port 3000');
+app.listen(port, () => {
+    console.log(`Started on port: ${port}`);
 });
 
 module.exports = {app};

@@ -15,7 +15,25 @@ const {MongoClient, ObjectID} = require('mongodb');
 //var user = {name: 'Mike', age:26};
 //var {name} = user;
 //////////////////////////////////////////////
+// mongodb created on mlab for testing on heroku. 
+/*
+MongoClient.connect('mongodb://test1:todoapp@123@ds139523.mlab.com:39523/todoapp', (err, client)=>{
+if(err) {
+    return console.log('Unable to connect to the mlab---Mongodb server');
+}
+console.log('connected to mlab ------Mongodb server');
 
+const db = client.db('todoapp');
+db.collection('todos').insertOne({
+    text: 'Something to do ',
+    completed: false
+    }, (err, result) => {
+    if(err) {
+        return console.log('Unable to insert -todo- into mlab collection', err);
+    }
+    console.log(JSON.stringify(result.ops, undefined, 2));
+    });
+});*/
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client)=>{
     if(err) {
