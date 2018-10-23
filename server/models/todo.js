@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 // create mongoose model.
-var Todo  = mongoose.model('todo', { // modified for mlab db 
+var Todo  = mongoose.model('Todo', {  
     text : {
         type: String,
         required: true,
