@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var {ObjectID} = require('mongodb');
+const _ = require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 // ES6 destructuring.
 var {mongoose} = require('./db/mongoose');// ext  .js can be left over');
@@ -15,7 +16,6 @@ var app = express();
 // use port from system for heruku, else 
 // set port to 3000 for local host.
 const port = process.env.PORT || 3000;
-
 
 // middleware for body parser.
 app.use(bodyParser.json());
@@ -102,6 +102,42 @@ app.delete('/todos/:id', (req,res) => {
         res.status(400).send();
     });
 });
+
+// Edit/update existing recs/docs.
+app.patch('/todos/:id', (req, res) => {
+    var id =  req.params.id;
+    // pick is a helper in lodash, which allows to pick selective
+    // properties in the body.
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    // Check if valid.
+    if(!ObjectID.isValid(id))
+    {
+        // if invalid id, then set status to 404 and 
+        // send response with empty body.
+        return res.status(404).send();
+    }
+
+    if(_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        bodyParser.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set:body}, {new: true}).then((todo) =>{
+        // check if found.
+        if(!todo) {
+            return res.send(404).send();
+        }
+        res.send({todo});
+
+    }).catch((e) => {
+        res.status(404).send();
+    })
+});
+
+
 
 app.listen(port, () => {
     console.log(`Started on port: ${port}`);

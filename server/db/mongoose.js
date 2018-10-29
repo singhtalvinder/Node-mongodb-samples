@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://localhost:27017/TodoApp');
+console.log("Connected to local host momgodb !! ");
 //mongoose.connect(
     //'mongodb://test123:test123@ds139523.mlab.com:39523/todoapp' ||
 //    'mongodb://localhost:27017/Todoapp');
