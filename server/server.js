@@ -1,18 +1,4 @@
-// From heroku for getting node dev env.
-var env = process.env.NODE_DEV || 'development';
-
-console.log(' Current Env settings are--->', env);
-
-// config app based on env.
-if(env === 'development') {
-    process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';
-
-} else if(env === 'test') {
-    process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/todoapptest';
-}
-
+const config = require('./config/config')
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -22,7 +8,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');// ext  .js can be left over');
 
 var {Todo} = require('./models/todo');
-var {user} = require('./models/user');
+var {User} = require('./models/user');
 
 // create routes.
 // server
@@ -30,7 +16,7 @@ var app = express();
 
 // use port from system for heruku, else 
 // set port to 3000 for local host.
-const port = process.env.PORT;// || 3000;
+const port = process.env.PORT || 3000;
 
 // middleware for body parser.
 app.use(bodyParser.json());
@@ -152,7 +138,20 @@ app.patch('/todos/:id', (req, res) => {
     })
 });
 
+// POST /users using authentication.
+app.post('/users', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
 
+    user.save().then(() =>{
+        return user.generateAuthToken();
+    }).then((token)=> {
+        // custom header by x-
+        res.header('x-auth', token).send(user);
+    }).catch((e) => {
+        res.status(400).send(e);
+    }) 
+});
 
 app.listen(port, () => {
     console.log(`Started on port: ${port}`);
