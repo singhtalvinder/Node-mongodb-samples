@@ -68,6 +68,30 @@ userSchema.methods.generateAuthToken = function() {
     });
 };
 
+userSchema.statics.findByToken = function(token) {
+    // this refers to the model.
+    var User = this;
+    var decoded;
+    try {
+        decoded = jwt.verify(token,'mysecret123');
+
+    }catch(e) {
+        // return promise that always rejects.
+        //return new Promise((resolve, reject) =>{
+        //    reject();
+        //});
+        // Or simply
+        return Promise.reject();
+    }
+
+    // find user if everything is ok.
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
+    
+};
 
 // create mongoose model for a user schema.
 var User = mongoose.model('User',userSchema);

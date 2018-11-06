@@ -9,6 +9,7 @@ var {mongoose} = require('./db/mongoose');// ext  .js can be left over');
 
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 // create routes.
 // server
@@ -152,6 +153,13 @@ app.post('/users', (req, res) => {
         res.status(400).send(e);
     }) 
 });
+
+// Private route , also utilized middleware call for authenticating user!! 
+app.get('/users/me', authenticate, (req,res) => {
+    res.send(req.user);
+});
+
+
 
 app.listen(port, () => {
     console.log(`Started on port: ${port}`);
