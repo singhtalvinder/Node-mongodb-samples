@@ -152,7 +152,7 @@ describe('PATCH /todos/:id', () => {
         .expect((res) => {
             expect(res.body.todo.text).toBe(text);
             expect(res.body.todo.completed).toBe(true);
-            //expect(res.body.todo.completedAt).toBe('number');
+            expect(res.body.todo.completedAt).toBe('number');
         })
         .end((done));
     });
@@ -172,7 +172,7 @@ describe('PATCH /todos/:id', () => {
         .expect((res) => {
             expect(res.body.todo.text).toBe(text);
             expect(res.body.todo.completed).toBe(false);
-           // expect(res.body.todo.completedAt).toNotExist();
+            expect(res.body.todo.completedAt).toNotExist();
         })
         .end((done));
     });
@@ -218,8 +218,8 @@ describe('POST /users', () => {
         .send({email, password})
         .expect(200)
         .expect((res) => {
-            //expect(res.header['x-auth']).toExist();// need to look into this later.
-            //expect(res.body._id) .toExist();
+            expect(res.header['x-auth']).toExist();// need to look into this later.
+            expect(res.body._id) .toExist();
             expect(res.body.email).toBe(email);
         })
         .end((err) => {
@@ -228,10 +228,10 @@ describe('POST /users', () => {
             }
 
             User.findOne({email}).then ((user) => {
-                //expect(user).toExist();
+                expect(user).toExist();
                 expect(user.password).toNotBe(password);
                 done();
-            });
+            }).catch((e) => done(e));
         });
     }).timeout(5000);
 
@@ -256,6 +256,62 @@ describe('POST /users', () => {
        .expect(400)
        .end(done);
     });
+});
+
+
+//POST users/login
+describe('POST /users/login', () => {
+    it('Should login user and return auth token', (done) =>{
+        request(app)
+        .post('/users/login')
+        .send({
+            email: users[1].email,
+            password: users[1].password
+        })
+        .expect(200)
+        .expect((res) =>{
+            expect(res.headers['x-auth']).toExist();
+        })
+        .end ((err, res) => {
+            if(err) {
+                return done(err);
+            }
+
+            User.findById(users[1]._id).then ((user) => {
+                expect(user.tokens[0]).toInclude({
+                    access: 'auth',
+                    token: res.header['x-auth']
+                });
+                done();
+            }).catch((e) => done(e));
+        });
+    });
+
+
+    it('Should reject invalid login', (done) => {
+        request(app)
+        .post('/users/login')
+        .send({
+            email: users[1].email,
+            password: users[1].password + '1'
+            })
+        .expect(400)
+        .expect((res) =>{
+            expect(res.headers['x-auth']).toNotExist();
+        })
+        .end ((err, res) => {
+            if(err) {
+                return done(err);
+            }
+
+            User.findById(users[1]._id).then ((user) => {
+                expect(user.tokens.length).toBe(0);
+                done();
+            }).catch((e) => done(e));
+        });
+
+    });
+
 });
 
 
