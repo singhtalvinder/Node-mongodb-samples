@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 // schema for User.
 var userSchema =  new mongoose.Schema({
@@ -92,6 +93,26 @@ userSchema.statics.findByToken = function(token) {
     });
     
 };
+
+// Mongoose middleware usage for performing some actions before a save.
+userSchema.pre('save', function(next) {
+    var user = this;
+
+    // check if pwd modified, then sal and hash!! 
+    if(user.isModified('password')) {
+        bcrypt.genSalt(10, (err, salt) =>{
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                // convert from plain password to salted, hash password.
+                user.password = hash;
+                next();
+            });
+        });
+    } else{
+        next();
+    }
+});
+
+
 
 // create mongoose model for a user schema.
 var User = mongoose.model('User',userSchema);

@@ -1,11 +1,27 @@
 // use only the Sha256.
 const {SHA256} = require('crypto-js');
 
-
 //II: Easier way: JWT library.
 const jwt = require('jsonwebtoken');
 
+//bcryptjs for salting n hashing passwords.
+const bcrypt = require('bcryptjs');
 
+// testing salt and Hash
+var passwd = 'password123!';
+
+bcrypt.genSalt(10,(err, salt) => {
+    bcrypt.hash(passwd, salt, (err, hash) => {
+        //console.log(hash);
+    });
+});
+
+var hashedPasswd = '$2a$10$YAiMXPGwju.IBnnh9TngyO1tDC/yX9U.TSa5FderpYf1rlm97ON.q';
+bcrypt.compare(passwd, hashedPasswd, (err, res) => {
+    console.log(res);
+})
+
+/*
 var data = {
     id: 10
 };
@@ -15,7 +31,7 @@ console.log(token);
 
 var decoded = jwt.verify(token, 'myjwtsecret123');
 console.log('Decoded token:', decoded);
-
+*/
 
 // I: using SHA256
 /*
