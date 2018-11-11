@@ -50,9 +50,7 @@ userSchema.methods.toJSON = function() {
     return _.pick(userObject, ['_id', 'email']); 
 };
 
-
-
-// These are methods weadd to the schema to manipulate data.
+// These are methods we add to the schema to manipulate data.
 userSchema.methods.generateAuthToken = function() {
     var user = this;
     var access = 'auth';
@@ -66,6 +64,21 @@ userSchema.methods.generateAuthToken = function() {
     // save 
     return user.save().then(()=> {
         return token;
+    });
+};
+
+// Remove token/ authorization.
+userSchema.methods.removeToken = function(token) {
+    var user = this;
+    // Using mongodb $pull operator to remove items from array that
+    // match the given criteria.
+    return user.update({
+        $pull: {
+            tokens:
+             //{ token: token }
+             // or simply
+             {token}
+        }
     });
 };
 
